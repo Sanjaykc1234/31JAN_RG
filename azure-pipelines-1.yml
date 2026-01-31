@@ -1,0 +1,55 @@
+name: job-pipeline
+
+trigger: none
+
+pool: Vinod
+
+jobs:
+- job: terraform_install
+  displayName: Terraform Install
+  steps:
+  - task: TerraformInstaller@1
+    inputs:
+      terraformVersion: 'latest'
+
+ 
+- job: terraform_init
+  displayName: Terraform Init
+  dependsOn: terraform_install
+  steps:
+  - task: TerraformTask@5
+    inputs:
+      provider: azurerm
+      command: init
+      commandOptions: '-upgrade'
+      workingDirectory: '$(System.DefaultWorkingDirectory)/'
+      backendServiceArm: 'vinod service connection2'
+      backendAzureRmResourceGroupName: 'rg_rohit'
+      backendAzureRmStorageAccountName: 'stgrohit1'
+      backendAzureRmContainerName: 'rohitcontainer'
+      backendAzureRmKey: 'rohit.tfstate'
+
+- job: terraform_plan
+  displayName: Terraform Plan
+  dependsOn: terraform_init
+  steps:
+  - task: TerraformTask@5
+    inputs:
+      provider: azurerm
+      command: plan
+      workingDirectory: '$(System.DefaultWorkingDirectory)/'
+      environmentServiceNameAzureRM: 'vinod service connection2'
+
+- job: terraform_apply
+  displayName: Terraform Apply
+  dependsOn: terraform_plan
+  steps:
+  - task: TerraformTask@5
+    inputs:
+      provider: azurerm
+      command: apply
+      workingDirectory: '$(System.DefaultWorkingDirectory)/'
+      environmentServiceNameAzureRM: 'vinod service connection2'
+      commandOptions: '-auto-approve'
+
+
