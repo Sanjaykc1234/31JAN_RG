@@ -21,6 +21,7 @@ jobs:
     inputs:
       provider: azurerm
       command: init
+      commandOptions: '-upgrade'
       workingDirectory: '$(System.DefaultWorkingDirectory)/'
       backendServiceArm: 'vinod service connection2'
       backendAzureRmResourceGroupName: 'rg_rohit'
