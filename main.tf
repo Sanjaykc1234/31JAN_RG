@@ -1,3 +1,4 @@
+
 terraform {
   required_providers {
     azurerm = {
@@ -5,7 +6,15 @@ terraform {
       version = "4.57.0"
     }
   }
+
+   backend "azurerm" {
+    resource_group_name  = "rg_sonil1"
+    storage_account_name = "stgsonil1"
+    container_name       = "sonil1container"
+    key                  = "prod.terraform.tfstate"
+  }
 }
+
 
 provider "azurerm" {
   features {}
